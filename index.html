@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Loading...</title>
+    <link id="favicon" rel="icon" href="github.ico" />
+    <script>
+      const params = new URLSearchParams(location.search)
+      const title = params.get("title")
+      const icon = params.get("icon")
+
+      if (title) {
+        document.title = decodeURIComponent(title)
+      }
+
+      if (icon) {
+        const link = document.querySelector("link[rel~='icon']")
+        link.href = decodeURIComponent(icon)
+      }
+    </script>
+  </head>
+  <body>
+    <h1>Meta Tag Dynamic Test</h1>
+  </body>
+</html>
