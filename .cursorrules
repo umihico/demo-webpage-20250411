@@ -26,4 +26,81 @@ convert -density 300 icon.svg -resize 512x512 icon-M-512.png
    ```html
    <meta name="theme-color" content="#FF4081" />
    ```
-   - 色は毎回変更することで、キャッシュが更新されたことを確認可能 
+   - 色は毎回変更することで、キャッシュが更新されたことを確認可能
+
+## マニフェストファイルの実験ノウハウ
+
+1. マニフェストファイルの優先順位
+   - マニフェストファイルはHTMLのmetaタグより優先される
+   - 例：HTMLでMのアイコン、マニフェストでSのアイコンを指定した場合、Sのアイコンが表示される
+
+2. 複数のマニフェストファイル
+   - 同じウェブサイト上で複数のマニフェストファイルを使用可能
+   - 各HTMLファイルで異なるマニフェストファイルを指定できる
+   - 例：`manifest.json`と`manifest-B.json`を同時に使用可能
+
+3. 実験のためのHTMLテンプレート
+   ```html
+   <!DOCTYPE html>
+   <html lang="ja">
+     <head>
+       <meta charset="UTF-8" />
+       <title>user-{文字}</title>
+       <link id="favicon" rel="icon" href="icon-{文字}-192.png" />
+       <!-- iOS用 -->
+       <link rel="apple-touch-icon" href="icon-{文字}-192.png" />
+       <meta name="apple-mobile-web-app-capable" content="yes" />
+       <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+       <!-- Android用 -->
+       <meta name="theme-color" content="#FF4081" />
+       <meta name="mobile-web-app-capable" content="yes" />
+       <link rel="icon" sizes="192x192" href="icon-{文字}-192.png" />
+       <link rel="icon" sizes="512x512" href="icon-{文字}-512.png" />
+       <link rel="shortcut icon" href="icon-{文字}-192.png" />
+       <!-- マニフェストファイルのリンク（必要な場合） -->
+       <link rel="manifest" href="manifest-{文字}.json" />
+     </head>
+     <body>
+       <h1>Meta Tag Dynamic Test ({文字})</h1>
+       <div class="info">
+         <h2>設定情報</h2>
+         <ul>
+           <li>マニフェスト: manifest-{文字}.json（またはなし）</li>
+           <li>アイコン: icon-{文字}-192.png, icon-{文字}-512.png</li>
+           <li>テーマカラー: #FF4081</li>
+         </ul>
+       </div>
+       <nav>
+         <ul>
+           <li><a href="index.html">Mのページへ</a></li>
+           <li><a href="user2.html">Nのページへ</a></li>
+           <li><a href="user3.html">Sのページへ</a></li>
+           <li><a href="user4.html">Bのページへ</a></li>
+         </ul>
+       </nav>
+     </body>
+   </html>
+   ```
+
+4. マニフェストファイルのテンプレート
+   ```json
+   {
+     "name": "user-{文字}",
+     "short_name": "{文字}",
+     "icons": [
+       {
+         "src": "icon-{文字}-192.png",
+         "sizes": "192x192",
+         "type": "image/png"
+       },
+       {
+         "src": "icon-{文字}-512.png",
+         "sizes": "512x512",
+         "type": "image/png"
+       }
+     ],
+     "theme_color": "#FF4081",
+     "background_color": "#4a90e2",
+     "display": "standalone"
+   }
+   ```
